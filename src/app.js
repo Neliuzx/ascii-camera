@@ -2,17 +2,19 @@ const video = document.getElementById('video')
 const message = document.getElementById('message')
 const output = document.getElementById('output')
 const characters = " .:-=+*#%@"
-
+const compteur = document.getElementById('compteur')
 const canvas = document.createElement('canvas')
 const ctx = canvas.getContext('2d', { willReadFrequently: true })
 
 let cols = 120
 let rows = 0
+let frames = 0
+let lastTime = 0
 
 video.addEventListener('loadedmetadata', () => {
     setupGrid()
     console.log(`Vidéo ${video.videoWidth}x${video.videoHeight} → grille ${cols}x${rows}`)
-    requestAnimationFrame(loop)   // démarre la boucle
+    requestAnimationFrame(loop)
 })
 
 async function startCamera() {
@@ -53,7 +55,13 @@ function frametoascii() {
 
 function loop(now) {
     output.textContent = frametoascii()
-    requestAnimationFrame(loop)           
+    frames++
+    if(now - lastTime >= 1000){
+        lastTime = now
+        compteur.textContent = frames + "FPS"
+        frames = 0
+    }
+    requestAnimationFrame(loop)
 }
 
 startCamera()
